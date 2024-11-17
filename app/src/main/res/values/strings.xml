@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Здоровье</string>
+
+    <!-- Элементы MainScreen -->
+    <string name="button_pressure">Давление</string>
+    <string name="button_mno">МНО</string>
+    <string name="button_temperature">Температура</string>
+
+    <!-- Элементы MNOItem -->
+    <string name="button_add">Добавить</string>
+    <string name="button_clear">Очистить</string>
+
+    <!-- Элементы Dialog -->
+    <string name="button_delete">Удалить</string>
+    <string name="button_cancel">Отмена</string>
+
+
+
+
+    <string name="dateformat">yyyy-MM-dd   HH:mm</string>
+
+
+</resources>
