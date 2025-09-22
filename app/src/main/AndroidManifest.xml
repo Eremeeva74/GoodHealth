@@ -1,47 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!--package="com.eremeeva.goodhealth"-->
 
     <application
-
+        android:name=".GoodHealthApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_goodhealth"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_goodhealth_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GoodHealth"
         tools:targetApi="31">
-        <!--
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.goodhealth.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
         <activity
-            android:name=".MNOItem"
+            android:name=".ui.pressure.PressureActivity"
             android:exported="false"
-            android:label="@string/title_activity_mnoitem"
+            android:label="@string/pressure_activity_title"
             android:theme="@style/Theme.GoodHealth" />
         <activity
-            android:name=".PressureActivity"
+            android:name=".ui.mno.MNOActivity"
             android:exported="false"
-            android:label="@string/title_activity_pressure"
+            android:label="@string/mno_activity_title"
             android:theme="@style/Theme.GoodHealth" />
         <activity
-            android:name=".MainScreen"
-            android:exported="false"
-            android:label="@string/title_activity_main_screen"
-            android:theme="@style/Theme.GoodHealth" />
-        <activity
-            android:name=".MNOScreen"
-            android:exported="false"
-            android:label="@string/title_activity_mnoscreen"
-            android:theme="@style/Theme.GoodHealth" />
-        <activity
-            android:name=".MNOActivity"
-            android:exported="false" />
-        -->
-        <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.GoodHealth">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
