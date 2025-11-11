@@ -2,7 +2,7 @@
     <string name="app_name">Здоровье</string>
 
     <string name="dateformat">yyyy-MM-dd</string>
-    <string name="datetimeformat">yyyy-MM-dd   HH:mm</string>
+    <string name="datetimeformat">yyyy-MM-dd   HH:mm:ss</string>
     <string name="filterdateformat">dd/MM/yyyy</string>
 
     <!-- Элементы MainScreen -->
@@ -12,16 +12,20 @@
 
     <!-- MNOActivity -->
     <string name="mno_activity_title">МНО</string>
-    <string name="mno_activity_showmenu">Показать меню</string>
     <string name="mno_activity_download">Скачать</string>
 
     <!-- PressureActivity -->
     <string name="pressure_activity_title">Давление</string>
+    <string name="pressure_activity_download">Скачать</string>
 
     <!-- Элементы MNOItem -->
     <string name="mnoitem_title">Введите значения:</string>
     <string name="mnoitem_button_add">Добавить</string>
-    <string name="mnoitem_button_close">Закрыть</string>
+    <string name="mnoitem_button_cancel">Отмена</string>
+    <string name="mnoitem_textfield_1">МНО</string>
+    <string name="mnoitem_textfield_2">% по Квику</string>
+    <string name="mnoitem_textfield_3">Сек.</string>
+
 
     <!-- Элементы PressureItem -->
     <string name="pressureitem_pressure">Давление</string>
@@ -30,17 +34,16 @@
     <string name="pressureitem_button_close">Закрыть</string>
 
     <!-- Элементы AlertDeleteDialog -->
-    <string name="deletedialog_caption">Подтверждение действия</string>
+    <string name="deletedialog_caption">Подтверждение</string>
     <string name="deletedialog_text">Вы действительно хотите удалить элемент?</string>
-    <string name="deletedialog_btn_delete">Удалить</string>
-    <string name="deletedialog_btn_cancel">Отмена</string>
+    <string name="deletedialog_btn_delete">Да</string>
+    <string name="deletedialog_btn_cancel">Нет</string>
 
     <!-- Элементы FilterDialog -->
-    <!--
     <string name="filter_period_all">все</string>
     <string name="filter_period_week">за неделю</string>
     <string name="filter_period_month">за месяц</string>
-    <string name="filter_period_dates">за период</string> -->
+    <string name="filter_period_dates">за период</string>
     <string name="filter_title">Фильтр</string>
     <string name="filter_inputdate">Введите дату:</string>
     <string name="filter_button_accept">Применить</string>
