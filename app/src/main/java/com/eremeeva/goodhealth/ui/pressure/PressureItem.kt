@@ -1,8 +1,8 @@
 package com.eremeeva.goodhealth.ui.pressure
 
 import android.annotation.SuppressLint
-import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,14 +32,17 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.eremeeva.domain.models.PressureData
 import com.eremeeva.goodhealth.R
-import java.util.Date
-import java.util.Locale
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -56,43 +58,38 @@ fun PressureItemDialog(
         var downValue by remember { mutableStateOf("") }
         var pulse by remember { mutableStateOf("") }
 
-        val formatter = SimpleDateFormat(stringResource(R.string.datetimeformat), Locale.getDefault())
+        val formatter = DateTimeFormatter.ofPattern(stringResource(R.string.datetimeformat))
 
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            ,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-            shape = RoundedCornerShape(16.dp)){
-
+        Card(modifier = Modifier .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+        ){
             Column(modifier = Modifier
                 .fillMaxWidth()
-                .selectableGroup ()
+                .selectableGroup()
+                .semantics { isTraversalGroup = true }
+                .padding(5.dp)
+                .border(
+                    width = 3.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(10.dp)
+                )
                 .padding(10.dp)
-                .border(width = 3.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(10.dp))
             ){
                 val focusRequester = remember { FocusRequester() }
 
                 Text(text = stringResource(R.string.pressureitem_pressure),
-                    modifier = Modifier .padding(10.dp), style = typography.labelMedium)
-                Row(verticalAlignment = Alignment.CenterVertically){
+                    modifier = Modifier .padding(10.dp), style = typography.bodyLarge)
+                Row(modifier = Modifier .padding(10.dp), verticalAlignment = Alignment.CenterVertically){
                     TextField(
                         value = upValue,
                         onValueChange = { upValue = it },
                         modifier = Modifier
-                            .padding(start = 15.dp)
                             .focusRequester(focusRequester)
-                            .onFocusChanged {}
-                            .width(80.dp),
+                            .width(80.dp)
+                            .semantics { traversalIndex = 1f },
                         singleLine = true,
                         shape = RoundedCornerShape(10.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor =  MaterialTheme.colorScheme.tertiaryContainer,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            focusedLabelColor =  MaterialTheme.colorScheme.onPrimaryContainer,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         isError = upValue.isNotEmpty() && !isValidText(upValue)
                     )
@@ -102,96 +99,86 @@ fun PressureItemDialog(
                     }
 
                     Text(text = "/",
-                        modifier = Modifier
-                            .padding(start = 10.dp, end = 10.dp),
-                        style = typography.titleMedium)
+                        modifier = Modifier .padding(start = 10.dp, end = 10.dp),
+                        style = typography.bodyLarge)
                     TextField(
                         value = downValue,
                         onValueChange = { downValue = it },
-                        singleLine = true,
                         modifier = Modifier
-                            .width(80.dp),
+                            .width(80.dp)
+                            .semantics { traversalIndex = 2f },
+                        singleLine = true,
                         shape = RoundedCornerShape(10.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor =  MaterialTheme.colorScheme.tertiaryContainer,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            focusedLabelColor =  MaterialTheme.colorScheme.onPrimaryContainer,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         isError = downValue.isNotEmpty() && !isValidText(downValue)
                     )
                 }
 
                 Text(text = stringResource(R.string.pressureitem_pulse),
-                    modifier = Modifier .padding(10.dp), style = typography.labelMedium)
-                Row{
+                    modifier = Modifier .padding(10.dp), style = typography.bodyLarge)
+                Row(modifier = Modifier .padding(10.dp)){
                     TextField(
                         value = pulse,
                         onValueChange = { pulse = it },
                         modifier = Modifier
-                            .padding(start = 15.dp, bottom = 10.dp)
-                            .width(80.dp),
+                            .width(80.dp)
+                            .semantics { traversalIndex = 3f },
                         singleLine = true,
                         shape = RoundedCornerShape(10.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor =  MaterialTheme.colorScheme.tertiaryContainer,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            focusedLabelColor =  MaterialTheme.colorScheme.onPrimaryContainer,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         isError = pulse.isNotEmpty() && !isValidText(pulse)
                     )
-
-            }
-            }
-
-            Row(modifier = Modifier
-                .padding(10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly){
-                ElevatedButton(
-                    onClick =
-                    {
-                        if (upValue.isNotEmpty() && isValidText(upValue) &&
-                            downValue.isNotEmpty() && isValidText(downValue) &&
-                            pulse.isNotEmpty() && isValidText(pulse)){
-                            val item = PressureData(id = null, creationDate = formatter.format(Date()),
-                                upValue = upValue.toInt(),
-                                downValue = downValue.toInt(),
-                                pulse = pulse.toInt()
-                            )
-
-                            pressureViewModel.handlePressureIntent(PressureIntent.Add(item))
-                            onBackClicked()
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(end = 5.dp)
-                        .weight(1f),
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary)
-                ){
-                    Text(
-                        text = stringResource(R.string.pressureitem_button_add),
-                        style = typography.labelMedium
-                    )
                 }
+            }
 
-                ElevatedButton(
-                    onClick = { onBackClicked() },
-                    modifier = Modifier
-                        .padding(start = 5.dp)
-                        .weight(1f),
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary)
-                ){
-                    Text(
-                        text = stringResource(R.string.pressureitem_button_close),
-                        style = typography.labelMedium
-                    )
+            val btnTextAdd = stringResource(R.string.mnoitem_button_add)
+            val btnTextCancel = stringResource(R.string.mnoitem_button_cancel)
+
+            val buttons = listOf( btnTextCancel, btnTextAdd )
+
+            Row(modifier = Modifier .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ){
+                for (btn in buttons) {
+                    val isButtonFocused = remember { mutableStateOf(false) }
+
+                    ElevatedButton(
+                        onClick =
+                            {
+                               when (btn){
+                                   btnTextAdd -> {
+                                       if (upValue.isNotEmpty() && isValidText(upValue) &&
+                                           downValue.isNotEmpty() && isValidText(downValue) &&
+                                           pulse.isNotEmpty() && isValidText(pulse)){
+                                           val item = PressureData(id = null, creationDate = LocalDateTime.now().format(formatter),
+                                               upValue = upValue.toInt(),
+                                               downValue = downValue.toInt(),
+                                               pulse = pulse.toInt()
+                                           )
+
+                                           pressureViewModel.handlePressureIntent(PressureIntent.Add(item))
+                                           onBackClicked()
+                                       }
+                                   }
+                                   else -> onBackClicked()
+                               }
+                            },
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .weight(1f)
+                            .onFocusChanged { focusState ->
+                                isButtonFocused.value = focusState.isFocused
+                            }
+                            .focusable(),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.elevatedButtonColors(
+                            containerColor = if (isButtonFocused.value) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = if (isButtonFocused.value)  MaterialTheme.colorScheme.onPrimary
+                            else MaterialTheme.colorScheme.onPrimaryContainer)
+                    ) {
+                        Text( text = btn, style = typography.bodyMedium)
+                    }
                 }
             }
         }

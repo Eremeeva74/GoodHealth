@@ -1,12 +1,18 @@
 plugins {
-    alias(libs.plugins.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.devtoolsKsp)
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 android {
-    namespace = "com.example.data"
-    compileSdk = 34
+    namespace = "com.eremeeva.goodhealth.data"
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -16,22 +22,15 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
-            //proguardFiles(
-            //    getDefaultProguardFile("proguard-android-optimize.txt"),
-            //    "proguard-rules.pro"
-            //)
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
-        getByName("debug") {
+        debug {
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
     }
 }
 

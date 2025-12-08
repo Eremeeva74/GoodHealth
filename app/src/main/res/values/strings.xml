@@ -2,7 +2,7 @@
     <string name="app_name">Здоровье</string>
 
     <string name="dateformat">yyyy-MM-dd</string>
-    <string name="datetimeformat">yyyy-MM-dd   HH:mm:ss</string>
+    <string name="datetimeformat">yyyy-MM-dd HH:mm:ss</string>
     <string name="filterdateformat">dd/MM/yyyy</string>
 
     <!-- Элементы MainScreen -->
@@ -13,10 +13,20 @@
     <!-- MNOActivity -->
     <string name="mno_activity_title">МНО</string>
     <string name="mno_activity_download">Скачать</string>
+    <string name="mno_activity_back">Назад</string>
+    <string name="mno_activity_filter">Фильтр</string>
+    <string name="mno_activity_menu">Меню</string>
+    <string name="mno_activity_add">Добавить</string>
+    <string name="mno_activity_delete">Удалить</string>
 
     <!-- PressureActivity -->
     <string name="pressure_activity_title">Давление</string>
     <string name="pressure_activity_download">Скачать</string>
+    <string name="pressure_activity_back">Назад</string>
+    <string name="pressure_activity_filter">Фильтр</string>
+    <string name="pressure_activity_menu">Меню</string>
+    <string name="pressure_activity_add">Добавить</string>
+    <string name="pressure_activity_delete">Удалить</string>
 
     <!-- Элементы MNOItem -->
     <string name="mnoitem_title">Введите значения:</string>
@@ -31,7 +41,7 @@
     <string name="pressureitem_pressure">Давление</string>
     <string name="pressureitem_pulse">Пульс</string>
     <string name="pressureitem_button_add">Добавить</string>
-    <string name="pressureitem_button_close">Закрыть</string>
+    <string name="pressureitem_button_cancel">Отмена</string>
 
     <!-- Элементы AlertDeleteDialog -->
     <string name="deletedialog_caption">Подтверждение</string>
@@ -47,6 +57,7 @@
     <string name="filter_title">Фильтр</string>
     <string name="filter_inputdate">Введите дату:</string>
     <string name="filter_button_accept">Применить</string>
+    <string name="filter_button_close">Закрыть</string>
 
 
 </resources>

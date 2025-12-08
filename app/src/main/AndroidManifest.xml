@@ -10,9 +10,9 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher_goodhealth"
         android:label="@string/app_name"
+        android:theme="@style/Theme.GoodHealth"
         android:roundIcon="@mipmap/ic_launcher_goodhealth_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.GoodHealth"
         tools:targetApi="31">
 
         <provider
@@ -29,16 +29,19 @@
             android:name=".ui.pressure.PressureActivity"
             android:exported="false"
             android:label="@string/pressure_activity_title"
-            android:theme="@style/Theme.GoodHealth" />
+            android:theme="@style/Theme.GoodHealth"
+             />
         <activity
             android:name=".ui.mno.MNOActivity"
             android:exported="false"
             android:label="@string/mno_activity_title"
-            android:theme="@style/Theme.GoodHealth" />
+            android:theme="@style/Theme.GoodHealth"
+             />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.GoodHealth">
+            android:theme="@style/Theme.GoodHealth"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

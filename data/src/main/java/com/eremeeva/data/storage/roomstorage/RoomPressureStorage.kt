@@ -1,28 +1,22 @@
 package com.eremeeva.data.storage.roomstorage
 
 import android.content.Context
+import android.util.Log
 import androidx.sqlite.SQLiteException
 import com.eremeeva.data.storage.PressureStorage
 import com.eremeeva.data.storage.models.PressureEntity
+import kotlinx.coroutines.flow.Flow
 
 class RoomPressureStorage(context: Context) : PressureStorage {
     private val db = GoodHealthDatabase.getInstance(context)
     private val pressureDao = db.pressureDao
 
-    override suspend fun getAll(): List<PressureEntity> {
-        return try{
-            pressureDao.getAll()
-        } catch(_: SQLiteException){
-            listOf()
-        }
+    override fun getAll(): Flow<List<PressureEntity>> {
+        return pressureDao.getAll()
     }
 
-    override suspend fun getByDate(date1: String?, date2: String?): List<PressureEntity> {
-        return try{
-            pressureDao.getByDate(date1, date2)
-        } catch(_: SQLiteException){
-            listOf()
-        }
+    override fun getByDate(date1: String?, date2: String?): Flow<List<PressureEntity>> {
+        return pressureDao.getByDate(date1, date2)
     }
 
     override suspend fun add(item: PressureEntity): Boolean {
@@ -30,7 +24,8 @@ class RoomPressureStorage(context: Context) : PressureStorage {
             pressureDao.insert(item)
             return true
         }
-        catch(_: SQLiteException){
+        catch(e: SQLiteException){
+            Log.e("GoodHealth", "Ошибка при вставке элемента PressureEntity", e)
             return false
         }
     }
@@ -40,7 +35,8 @@ class RoomPressureStorage(context: Context) : PressureStorage {
             pressureDao.delete(item)
             return true
         }
-        catch(_: SQLiteException){
+        catch(e: SQLiteException){
+            Log.e("GoodHealth", "Ошибка при удалении элемента PressureEntity", e)
             return false
         }
     }

@@ -1,4 +1,4 @@
-package com.example.data
+package com.eremeeva.data
 
 import org.junit.Test
 

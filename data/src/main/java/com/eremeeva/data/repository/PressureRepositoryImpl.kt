@@ -5,26 +5,27 @@ import com.eremeeva.data.storage.models.PressureEntity
 import com.eremeeva.data.storage.roomstorage.RoomPressureStorage
 import com.eremeeva.domain.models.PressureData
 import com.eremeeva.domain.repository.PressureRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class PressureRepositoryImpl(private val roomPressureStorage: RoomPressureStorage) : PressureRepository {
 
-    override suspend fun getAll(): List<PressureData>
+    override fun getAll(): Flow<List<PressureData>>
     {
-        val list = roomPressureStorage.getAll()
-        return list.map{
-            PressureData(id = it.id, creationDate = it.creationDate, upValue = it.upValue, downValue = it.downValue, pulse = it.pulse)
+        return roomPressureStorage.getAll().map{
+            it -> it.map{ PressureData(id = it.id, creationDate = it.creationDate, upValue = it.upValue, downValue = it.downValue, pulse = it.pulse) }
         }
     }
 
-    override suspend fun getByDate(date1: String?, date2: String?): List<PressureData>
+    override fun getByDate(date1: String?, date2: String?): Flow<List<PressureData>>
     {
-        val list = roomPressureStorage.getByDate(date1, date2)
-        return list.map{
-            PressureData(id = it.id,
-                creationDate = it.creationDate,
-                upValue = it.upValue,
-                downValue = it.downValue,
-                pulse = it.pulse)
+        return roomPressureStorage.getByDate(date1, date2).map{
+            it -> it.map { PressureData(id = it.id,
+                                        creationDate = it.creationDate,
+                                        upValue = it.upValue,
+                                        downValue = it.downValue,
+                                        pulse = it.pulse)
+            }
         }
     }
 

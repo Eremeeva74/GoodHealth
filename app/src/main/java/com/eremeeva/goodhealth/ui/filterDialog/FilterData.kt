@@ -9,3 +9,5 @@ data class FilterData(
 enum class FilterPeriod(val value: String){
     ALL("все"), WEEK("за неделю"), MONTH("за месяц"), PERIOD("за период")
 }
+
+

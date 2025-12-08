@@ -13,38 +13,40 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -54,8 +56,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -63,13 +63,15 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.eremeeva.domain.models.PressureData
 import com.eremeeva.goodhealth.R
 import com.eremeeva.goodhealth.ui.filterDialog.FilterDialog
 import com.eremeeva.goodhealth.ui.theme.GoodHealthTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.math.min
 
@@ -80,6 +82,7 @@ class PressureActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
             GoodHealthTheme {
@@ -92,77 +95,128 @@ class PressureActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ShowScreen() {
+        val vmState = pressureViewModel.state.collectAsState().value
+        val pressureList by vmState.pressureList.collectAsState(initial = emptyList())
+        val expandedMenu = remember { mutableStateOf(false) }
 
         val createPdfLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.CreateDocument("application/pdf")) { uri: Uri? ->
-            createPdf(uri, pressureViewModel.state.value.pressureList)
+            createPdf(uri, pressureList)
         }
-
-        val vmState = pressureViewModel.state.collectAsState().value
-        var expandedMenu by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(R.string.button_pressure), style = typography.titleLarge) },
+                    title = { Text(stringResource(R.string.button_pressure), style = typography.headlineLarge) },
                     navigationIcon = {
-                        IconButton(onClick = { finish() })
+                        IconButton(onClick = { finish() },
+                            modifier = Modifier .semantics{ role = Role.Button })
                         {
                             Icon(
-                                painter = painterResource(R.drawable.baseline_arrow_back_24),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                painter = painterResource(R.drawable.ic_arrow_back),
+                                contentDescription = stringResource(R.string.pressure_activity_back),
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
                     },
                     actions = {
-                        IconButton(onClick = { pressureViewModel.handlePressureIntent(PressureIntent.ShowFilterDialog(true))})
+                        IconButton(onClick = { pressureViewModel.handlePressureIntent(PressureIntent.ShowFilterDialog(true))},
+                                modifier = Modifier .semantics{ role = Role.Button })
                         {
                             Icon(
-                                painter = painterResource(R.drawable.baseline_filter_alt_24),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                painter = painterResource(R.drawable.ic_filter_alt),
+                                contentDescription = stringResource(R.string.pressure_activity_filter),
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
                         Box(modifier = Modifier .padding(5.dp)){
-                            IconButton(onClick = { expandedMenu = !expandedMenu }) {
-                                Icon(Icons.Default.Menu, contentDescription = "Показать меню")
+                            IconButton(onClick = { expandedMenu.value = !expandedMenu.value },
+                                    modifier = Modifier .semantics{ role = Role.Button }) {
+                                Icon(painterResource(R.drawable.ic_menu),
+                                    contentDescription = stringResource(R.string.pressure_activity_menu),
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer)
                             }
                             DropdownMenu(
-                                expanded = expandedMenu,
-                                onDismissRequest = { expandedMenu = false }
+                                expanded = expandedMenu.value,
+                                onDismissRequest = { expandedMenu.value = false },
+                                modifier = Modifier .padding(5.dp),
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                             ) {
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.mno_activity_download), style = typography.labelMedium) },
+                                    text = { Text(stringResource(R.string.pressure_activity_download), style = typography.titleSmall) },
                                     onClick = { createPdfLauncher.launch("pressure.pdf")
-                                                expandedMenu = false },
+                                                expandedMenu.value = false },
                                     leadingIcon = {
                                         Icon(
-                                            painter = painterResource(R.drawable.download_24px),
+                                            painter = painterResource(R.drawable.ic_download),
                                             contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onPrimary
+                                            tint = MaterialTheme.colorScheme.onTertiaryContainer
                                         )
-                                    }
+                                    },
+                                    colors = MenuItemColors(
+                                        textColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        trailingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        disabledTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        disabledLeadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        disabledTrailingIconColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                    )
                                 )
                             }
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary),
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { pressureViewModel.handlePressureIntent( PressureIntent.ShowPressureItem(true)) },
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = MaterialTheme.colorScheme.primary) {
-                    Icon(Icons.Outlined.Add, contentDescription = null)
+                LargeFloatingActionButton(
+                    onClick = { pressureViewModel.handlePressureIntent( PressureIntent.ShowPressureItem(true)) },
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ){
+                    Icon(
+                        painter = painterResource(R.drawable.ic_add),
+                        contentDescription = stringResource(R.string.pressure_activity_add)
+                    )
                 }
             },
             floatingActionButtonPosition = FabPosition.EndOverlay,
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.background
         ) {
             innerPadding ->
+            if (vmState.loading){
+                Box(modifier = Modifier .fillMaxSize(),
+                    contentAlignment = Alignment.Center){
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .width(64.dp)
+                            .padding(innerPadding),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                }
+            }
+            else{
+                val listState = rememberLazyListState()
+                LazyColumn (
+                    modifier = Modifier .fillMaxSize() .padding(innerPadding),
+                    contentPadding = PaddingValues(5.dp),
+                    state = listState,
+                    content = {
+                        runBlocking {
+                            items( count = pressureList.count() )
+                            {
+                                    index -> ShowCard( pressureList[index] ){
+                                pressureViewModel.handlePressureIntent( PressureIntent.Delete(pressureList[index]) )
+                            }
+                            }
+                        }
+                    },
+                )
+            }
 
             AnimatedVisibility(visible = vmState.showFilterDialog){
                 val filterDialog = FilterDialog(pressureViewModel.state.value.filterData)
@@ -179,31 +233,6 @@ class PressureActivity : ComponentActivity() {
             AnimatedVisibility(visible = vmState.showPressureItemDialog){
                 PressureItemDialog(pressureViewModel, onBackClicked = { pressureViewModel.handlePressureIntent( PressureIntent.ShowPressureItem(false)) })
             }
-
-            val listState = rememberLazyListState()
-            LazyColumn (
-                content = {
-                    runBlocking {
-                        pressureViewModel.handlePressureIntent( PressureIntent.Get)
-                        vmState.pressureList?.let {
-                            items( count = it.count() )
-                            { index -> ShowCard( vmState.pressureList[index]  )
-                                {
-                                    pressureViewModel.handlePressureIntent( PressureIntent.Delete(vmState.pressureList[index]) )
-                                }
-                            }
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(5.dp)
-                    .animateContentSize()
-                ,
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                state = listState,
-            )
         }
     }
 
@@ -213,94 +242,113 @@ class PressureActivity : ComponentActivity() {
         onDeleteItem: () -> Unit )
     {
         val focusRequester = remember { FocusRequester() }
-        val scope = rememberCoroutineScope()
-
         val showDeleteDialog = remember { mutableStateOf(false) }
 
-        val focusedBorderColor = MaterialTheme.colorScheme.primary
-        val unFocusedBorderColor = MaterialTheme.colorScheme.surface
+        val focusedContainerColor = MaterialTheme.colorScheme.secondary
+        val unFocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+        val focusedContentColor = MaterialTheme.colorScheme.onSecondary
+        val unFocusedContentColor = MaterialTheme.colorScheme.onSecondaryContainer
 
-        val focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
-        val unFocusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer
-
-        val cardFocused = remember { mutableStateOf(false) }
+        val containerColor = remember { mutableStateOf(unFocusedContainerColor)}
+        val contentColor = remember { mutableStateOf(unFocusedContentColor)}
 
         ElevatedCard(
-            onClick = { scope.launch { focusRequester.requestFocus() } },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(focusRequester)
+                .padding(5.dp)
                 .onFocusChanged {
-                    cardFocused.value = it.isFocused
+                    if (it.isFocused ){
+                        containerColor.value  = focusedContainerColor
+                        contentColor.value = focusedContentColor
+                    }
+                    else{
+                        containerColor.value = unFocusedContainerColor
+                        contentColor.value = unFocusedContentColor
+                    }
                 }
                 .focusable()
-                .border(width = if (cardFocused.value) 5.dp else 1.dp,
-                    color = if (cardFocused.value) focusedBorderColor else unFocusedBorderColor,
-                    shape = RoundedCornerShape(10.dp))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    focusRequester.requestFocus()
+                    containerColor.value  = focusedContainerColor
+                    contentColor.value = focusedContentColor
+                }
+                .focusRequester(focusRequester)
+                .focusable()
             ,
             colors = CardDefaults.cardColors(
-                containerColor = if (cardFocused.value) focusedContainerColor else unFocusedContainerColor,
-                contentColor = MaterialTheme.colorScheme.onSecondary
+                containerColor = containerColor.value,
+                contentColor = contentColor.value,
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ){
-            Row(modifier = Modifier
-                .padding(10.dp),
+            Row(modifier = Modifier .padding(10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Column(modifier = Modifier
-                    .weight(5f),
+                Column(modifier = Modifier .weight(5f),
                 )
                 {
                     Text(item.creationDate, style = typography.bodyLarge)
                     Spacer(modifier = Modifier.size(5.dp))
                     HorizontalDivider(modifier = Modifier .padding(end = 10.dp),
                         thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.onPrimary)
+                        color = MaterialTheme.colorScheme.onSecondaryContainer)
                     Spacer(modifier = Modifier.size(5.dp))
                     Row()
                     {
-                        Text("${item.upValue} / ${item.downValue}", style = typography.bodyMedium,
+                        Text("${item.upValue} / ${item.downValue}", style = typography.bodyLarge,
                             modifier = Modifier .weight(1f))
-                        Text(String.format("Пульс: ${item.pulse}"), style = typography.bodyMedium,
+                        Text(String.format("Пульс: ${item.pulse}"), style = typography.bodyLarge,
                             modifier = Modifier .weight(1f))
                     }
                 }
 
                 IconButton (
                     onClick = { showDeleteDialog.value = true },
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(50.dp),
+                    modifier = Modifier .weight(1f) .size(50.dp),
                 )
                 {
                     Icon(
-                        painter = painterResource(R.drawable.baseline_delete_outline_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        painter = painterResource(R.drawable.ic_delete),
+                        contentDescription = stringResource(R.string.pressure_activity_delete),
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
         }
 
         AnimatedVisibility(visible = showDeleteDialog.value){
+            val btnColors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+
             AlertDialog(
-                onDismissRequest = {},
-                title = { Text(text = stringResource(R.string.deletedialog_caption), style = typography.titleMedium) },
+                onDismissRequest = { showDeleteDialog.value = false },
+                modifier = Modifier .fillMaxWidth(),
+                title = { Text(text = stringResource(R.string.deletedialog_caption), style = typography.titleSmall) },
                 text = { Text(text = stringResource(R.string.deletedialog_text), style = typography.bodyLarge) },
                 confirmButton = {
                     Button(
                         onClick = {
                             onDeleteItem()
                             showDeleteDialog.value = false
-                        }
+                        },
+                        shape = RoundedCornerShape(16.dp),
+                        colors = btnColors
                     ) {
                         Text( text = stringResource(R.string.deletedialog_btn_delete), style = typography.titleSmall )
                     }
                 },
                 dismissButton = {
-                    Button( onClick = { showDeleteDialog.value = false } ){
+                    Button(
+                        onClick = { showDeleteDialog.value = false },
+                        shape = RoundedCornerShape(16.dp),
+                        colors = btnColors
+                    ){
                         Text(text = stringResource(R.string.deletedialog_btn_cancel), style = typography.titleSmall)
                     }
                 }

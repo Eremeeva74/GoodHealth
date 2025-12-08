@@ -1,4 +1,4 @@
-package com.example.goodhealth
+package com.eremeeva.goodhealth
 
 import org.junit.Test
 

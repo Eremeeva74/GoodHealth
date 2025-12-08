@@ -1,35 +1,28 @@
 [versions]
-agp = "8.7.3"
-hiltAndroid = "2.56.2"
+agp = "8.13.0"
+hiltAndroid = "2.57.2"
 junitJupiter = "5.7.1"
-kotlin = "2.0.0"
-coreKtx = "1.16.0"
+kotlin = "2.2.20"
+coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxCoroutinesCore = "1.8.1"
 lifecycleRuntimeKtx = "2.9.0"
-appcompat = "1.7.0"
-material = "1.12.0"
-activity = "1.10.1"
+activity = "1.11.0"
 constraintlayout = "2.2.1"
 mockito = "5.18.0"
-navigationCompose = "2.9.0"
-navigationRuntimeKtx = "2.9.0"
 roomRuntime = "2.7.1"
-runtimeLivedata = "1.8.1"
-ksp = "2.0.0-1.0.23"
-datastoreCoreAndroid = "1.1.6"
-activityCompose = "1.10.1"
-datastorePreferences = "1.1.6"
+ksp = "2.2.20-2.0.3"
+activityCompose = "1.11.0"
 foundationAndroid = "1.8.1"
-material3Android = "1.3.2"
 junitKtx = "1.2.1"
-junitJunit = "4.12"
 lifecycleRuntimeKtxVersion = "2.9.0"
-composeBom = "2024.04.01"
-jetbrainsKotlinJvm = "2.0.0"
-roomRuntimeAndroid = "2.7.1"
+composeBom = "2025.09.01"
+jetbrainsKotlinJvm = "2.2.21"
+uiGraphics = "1.9.4"
+runtime = "1.9.4"
+monitor = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,37 +35,33 @@ androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
-androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
-androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
-androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
-androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphics" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-devtoolsKsp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
+android-library = { id = "com.android.library", version.ref = "agp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-android-library = { id = "com.android.library", version.ref = "agp" }
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+org-jetbrains-kotlin-jvm = {id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm"}
+devtoolsKsp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
+hilt-android = {id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid"}
 
 
 

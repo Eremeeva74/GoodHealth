@@ -1,23 +1,25 @@
 package com.eremeeva.data.repository
 
-import androidx.sqlite.SQLiteException
-import com.eremeeva.domain.models.MNOData
-import com.eremeeva.domain.repository.MNORepository
 import com.eremeeva.data.storage.models.MNOEntity
 import com.eremeeva.data.storage.roomstorage.RoomMNOStorage
+import com.eremeeva.domain.models.MNOData
+import com.eremeeva.domain.repository.MNORepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+
 
 class MNORepositoryImpl(private val roomMNOStorage: RoomMNOStorage): MNORepository {
 
-    override suspend fun getAll(): List<MNOData>
-    {
-        val list: List<MNOEntity> = roomMNOStorage.getAll()
-        return list.map{ MNOData(it.id, it.creationDate, it.value1, it.value2, it.value3) }
+    override fun getAll(): Flow<List<MNOData>> {
+        return roomMNOStorage.getAll().map{
+                it -> it.map{ MNOData(it.id, it.creationDate, it.value1, it.value2, it.value3) }
+        }
     }
 
-    override suspend fun getByDate(date1: String?, date2: String?): List<MNOData>
-    {
-        val list: List<MNOEntity> = roomMNOStorage.getByDate(date1, date2)
-        return list.map{ MNOData(it.id, it.creationDate, it.value1, it.value2, it.value3) }
+    override fun getByDate(date1: String?, date2: String?): Flow<List<MNOData>>{
+        return roomMNOStorage.getByDate(date1, date2).map{
+            it -> it.map{MNOData(it.id, it.creationDate, it.value1, it.value2, it.value3) }
+        }
     }
 
     override suspend fun add(item: MNOData): Boolean {
@@ -28,3 +30,5 @@ class MNORepositoryImpl(private val roomMNOStorage: RoomMNOStorage): MNOReposito
         return roomMNOStorage.delete(MNOEntity(item.id, item.creationDate, item.value1, item.value2, item.value3))
     }
 }
+
+
