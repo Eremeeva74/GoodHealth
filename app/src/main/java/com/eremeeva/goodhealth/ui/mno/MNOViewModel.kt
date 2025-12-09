@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.eremeeva.domain.models.MNOData
 import com.eremeeva.domain.usecase.GetMNOUseCase
 import com.eremeeva.domain.usecase.SaveMNOUseCase
-import com.eremeeva.goodhealth.BuildConfig
 import com.eremeeva.goodhealth.ui.filterDialog.FilterData
 import com.eremeeva.goodhealth.ui.filterDialog.FilterPeriod
 import dagger.hilt.android.lifecycle.HiltViewModel
